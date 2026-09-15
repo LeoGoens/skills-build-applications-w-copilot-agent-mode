@@ -6,20 +6,29 @@ export const API_BASE_URL = codespaceName
   : 'http://localhost:8000/api';
 
 /**
+ * Fetches a URL and normalizes both paginated (`{ results: [...] }`) and
+ * plain array responses into an array.
+ */
+export async function fetchList(url) {
+  const response = await fetch(url)
+  if (!response.ok) {
+    throw new Error(`Failed to fetch ${url}: ${response.status}`)
+  }
+  const data = await response.json()
+  if (Array.isArray(data)) {
+    return data
+  }
+  if (Array.isArray(data?.results)) {
+    return data.results
+  }
+  return []
+}
+
+/**
  * Fetches a resource collection and normalizes both paginated
  * (`{ results: [...] }`) and plain array responses into an array.
  */
 export async function fetchCollection(resource) {
-  const response = await fetch(`${API_BASE_URL}/${resource}/`);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch ${resource}: ${response.status}`);
-  }
-  const data = await response.json();
-  if (Array.isArray(data)) {
-    return data;
-  }
-  if (Array.isArray(data?.results)) {
-    return data.results;
-  }
-  return [];
+  return fetchList(`${API_BASE_URL}/${resource}/`)
 }
+

@@ -1,5 +1,11 @@
 import { useEffect, useState } from 'react'
-import { fetchCollection } from '../api.js'
+import { fetchList } from '../api.js'
+
+// Requires VITE_CODESPACE_NAME to be defined (for example in .env.local).
+const codespaceName = import.meta.env.VITE_CODESPACE_NAME
+const LEADERBOARD_ENDPOINT = codespaceName
+  ? `https://${codespaceName}-8000.app.github.dev/api/leaderboard/`
+  : 'http://localhost:8000/api/leaderboard/'
 
 function Leaderboard() {
   const [entries, setEntries] = useState([])
@@ -8,7 +14,7 @@ function Leaderboard() {
   useEffect(() => {
     let ignore = false
 
-    fetchCollection('leaderboard')
+    fetchList(LEADERBOARD_ENDPOINT)
       .then((data) => {
         if (!ignore) setEntries(data)
       })

@@ -1,5 +1,11 @@
 import { useEffect, useState } from 'react'
-import { fetchCollection } from '../api.js'
+import { fetchList } from '../api.js'
+
+// Requires VITE_CODESPACE_NAME to be defined (for example in .env.local).
+const codespaceName = import.meta.env.VITE_CODESPACE_NAME
+const USERS_ENDPOINT = codespaceName
+  ? `https://${codespaceName}-8000.app.github.dev/api/users/`
+  : 'http://localhost:8000/api/users/'
 
 function Users() {
   const [users, setUsers] = useState([])
@@ -8,7 +14,7 @@ function Users() {
   useEffect(() => {
     let ignore = false
 
-    fetchCollection('users')
+    fetchList(USERS_ENDPOINT)
       .then((data) => {
         if (!ignore) setUsers(data)
       })

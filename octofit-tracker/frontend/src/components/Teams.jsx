@@ -1,5 +1,11 @@
 import { useEffect, useState } from 'react'
-import { fetchCollection } from '../api.js'
+import { fetchList } from '../api.js'
+
+// Requires VITE_CODESPACE_NAME to be defined (for example in .env.local).
+const codespaceName = import.meta.env.VITE_CODESPACE_NAME
+const TEAMS_ENDPOINT = codespaceName
+  ? `https://${codespaceName}-8000.app.github.dev/api/teams/`
+  : 'http://localhost:8000/api/teams/'
 
 function Teams() {
   const [teams, setTeams] = useState([])
@@ -8,7 +14,7 @@ function Teams() {
   useEffect(() => {
     let ignore = false
 
-    fetchCollection('teams')
+    fetchList(TEAMS_ENDPOINT)
       .then((data) => {
         if (!ignore) setTeams(data)
       })
